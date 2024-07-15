@@ -10,6 +10,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 import java.io.FileReader;
+import java.util.Date;
 
 public class App 
 {
@@ -34,7 +35,7 @@ public class App
                 covidData.setIsoCode(lineText[0]);
                 covidData.setContinent(lineText[1]);
                 covidData.setLocation(lineText[2]);
-                covidData.setDate(lineText[3]);
+                covidData.setReportDate(getDate(lineText[3]));
                 covidData.setTotalCases(parseDoubleOrZero(lineText[4]));
                 covidData.setNewCases(parseDoubleOrZero(lineText[5]));
                 covidData.setTotalDeaths(parseDoubleOrZero(lineText[6]));
@@ -96,7 +97,13 @@ public class App
         }
     }
     
-    private static Double parseDoubleOrZero(String value) {
+    private static Date getDate(String dateStr) {
+		Date retVal = DateUtil.parseDate(dateStr);
+		
+		return retVal == null ? DateUtil.parseDate("1700-01-01") : retVal;
+	}
+
+	private static Double parseDoubleOrZero(String value) {
         try {
             return value == null || value.isEmpty() ? 0.0 : Double.parseDouble(value);
         } catch (NumberFormatException e) {
